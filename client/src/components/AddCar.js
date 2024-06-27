@@ -33,7 +33,7 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:3000/api/cars', formData, {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/cars`, formData, {
         headers: {
           'x-auth-token': token,
           'Content-Type': 'multipart/form-data'

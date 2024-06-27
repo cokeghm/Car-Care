@@ -14,7 +14,7 @@ const Dashboard = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:3000/api/cars', {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars`, {
           headers: {
             'x-auth-token': token
           }
@@ -34,7 +34,7 @@ const Dashboard = () => {
   const fetchCarDetails = async (carId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`http://localhost:3000/api/cars/${carId}`, {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
         headers: {
           'x-auth-token': token
         }
@@ -74,10 +74,10 @@ const Dashboard = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.25rem', width: '25%' }}>Marca</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.25rem', width: '25%' }}>Modelo</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.25rem', width: '15%' }}>Año</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', fontSize: '1.25rem', width: '35%' }}>Detalles</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '25%', fontSize: '1.2rem' }}>Marca</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '25%', fontSize: '1.2rem' }}>Modelo</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '15%', fontSize: '1.2rem' }}>Año</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '35%', fontSize: '1.2rem' }}>Detalles</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,23 +99,23 @@ const Dashboard = () => {
       {selectedCar && (
         <Card sx={{ mt: 3 }}>
           <CardContent>
-            <Typography variant="h5" component="div">
+            <Typography variant="h5" component="div" sx={{ fontSize: '1.5rem' }}>
               {selectedCar.brand} {selectedCar.model}
             </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+            <Typography sx={{ mb: 1.5, fontSize: '1.25rem' }} color="text.secondary">
               Year: {selectedCar.year}
             </Typography>
-            <Typography variant="body2">
-              Registration Certificate: {selectedCar.registrationCertificate ? <a href={`http://localhost:3000/api/files/${selectedCar.registrationCertificate}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
+              Registration Certificate: {selectedCar.registrationCertificate ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.registrationCertificate}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
             </Typography>
-            <Typography variant="body2">
-              Circulation Permit: {selectedCar.circulationPermit ? <a href={`http://localhost:3000/api/files/${selectedCar.circulationPermit}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
+              Circulation Permit: {selectedCar.circulationPermit ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.circulationPermit}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
             </Typography>
-            <Typography variant="body2">
-              Technical Review: {selectedCar.technicalReview ? <a href={`http://localhost:3000/api/files/${selectedCar.technicalReview}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
+              Technical Review: {selectedCar.technicalReview ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.technicalReview}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
             </Typography>
-            <Typography variant="body2">
-              Mandatory Insurance: {selectedCar.mandatoryInsurance ? <a href={`http://localhost:3000/api/files/${selectedCar.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
+            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
+              Mandatory Insurance: {selectedCar.mandatoryInsurance ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
             </Typography>
           </CardContent>
         </Card>

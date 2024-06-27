@@ -9,7 +9,7 @@ const FileList = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/files');
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/files`);
         setFiles(res.data);
       } catch (err) {
         setError('Failed to fetch files');

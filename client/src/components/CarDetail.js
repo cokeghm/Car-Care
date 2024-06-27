@@ -12,7 +12,7 @@ const CarDetail = () => {
     const fetchCar = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:3000/api/cars/${id}`, {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars/${id}`, {
           headers: {
             'x-auth-token': token
           }
