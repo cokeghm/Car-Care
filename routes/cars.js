@@ -1,9 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const Car = require('../models/Car');
 const auth = require('../middleware/auth');
 
-module.exports = (upload, gfs) => {
+module.exports = (upload) => {
   const router = express.Router();
 
   // Crear un nuevo vehículo
@@ -21,10 +20,10 @@ module.exports = (upload, gfs) => {
         brand,
         model,
         year,
-        registrationCertificate: req.files['registrationCertificate'] ? req.files['registrationCertificate'][0].id : null,
-        circulationPermit: req.files['circulationPermit'] ? req.files['circulationPermit'][0].id : null,
-        technicalReview: req.files['technicalReview'] ? req.files['technicalReview'][0].id : null,
-        mandatoryInsurance: req.files['mandatoryInsurance'] ? req.files['mandatoryInsurance'][0].id : null,
+        registrationCertificate: req.files['registrationCertificate'] ? req.files['registrationCertificate'][0].path : null,
+        circulationPermit: req.files['circulationPermit'] ? req.files['circulationPermit'][0].path : null,
+        technicalReview: req.files['technicalReview'] ? req.files['technicalReview'][0].path : null,
+        mandatoryInsurance: req.files['mandatoryInsurance'] ? req.files['mandatoryInsurance'][0].path : null,
       });
 
       const car = await newCar.save();
