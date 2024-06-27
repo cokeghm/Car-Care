@@ -1,23 +1,41 @@
-# Usar una imagen base oficial de Node.js
-FROM node:14
+# Etapa 1: Construcción del frontend
+FROM node:16 as build-stage
 
-# Establecer el directorio de trabajo en la imagen Docker
 WORKDIR /app
 
-# Copiar los archivos package.json y package-lock.json
-COPY package*.json ./
+# Copia los archivos de configuración del proyecto
+COPY package.json package-lock.json ./
 
-# Instalar las dependencias del backend
+# Instala las dependencias del servidor
 RUN npm install
 
-# Copiar el resto del código de la aplicación
+# Copia los archivos del cliente y las dependencias
+COPY client/package.json client/package-lock.json ./client/
+RUN npm install --prefix client
+
+# Copia el resto de los archivos del proyecto
 COPY . .
 
-# Construir la aplicación React
-RUN npm install --prefix client && npm run build --prefix client
+# Construye el cliente
+RUN npm run client-build
 
-# Exponer el puerto de la aplicación
+# Etapa 2: Configuración de producción
+FROM node:16 as production-stage
+
+WORKDIR /app
+
+# Copia los archivos de configuración del proyecto
+COPY package.json package-lock.json ./
+
+# Instala las dependencias del servidor
+RUN npm install --only=production
+
+# Copia el servidor y los archivos estáticos construidos
+COPY --from=build-stage /app/client/build ./client/build
+COPY . .
+
+# Expone el puerto
 EXPOSE 3000
 
-# Definir el comando para iniciar la aplicación
-CMD ["node", "server.js"]
+# Comando para ejecutar el servidor
+CMD ["npm", "start"]
