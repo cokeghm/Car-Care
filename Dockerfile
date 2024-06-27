@@ -38,4 +38,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para ejecutar el servidor
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
