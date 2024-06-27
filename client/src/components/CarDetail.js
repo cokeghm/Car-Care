@@ -45,28 +45,28 @@ const CarDetail = () => {
       </Typography>
       <Typography variant="body1">
         <strong>Registration Certificate:</strong> {car.registrationCertificate ? (
-          <MuiLink href={`http://localhost:3000/api/cars/file/${car.registrationCertificate}`} target="_blank" rel="noopener noreferrer">
+          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.registrationCertificate}`} target="_blank" rel="noopener noreferrer">
             View
           </MuiLink>
         ) : 'Not uploaded'}
       </Typography>
       <Typography variant="body1">
         <strong>Circulation Permit:</strong> {car.circulationPermit ? (
-          <MuiLink href={`http://localhost:3000/api/cars/file/${car.circulationPermit}`} target="_blank" rel="noopener noreferrer">
+          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.circulationPermit}`} target="_blank" rel="noopener noreferrer">
             View
           </MuiLink>
         ) : 'Not uploaded'}
       </Typography>
       <Typography variant="body1">
         <strong>Technical Review:</strong> {car.technicalReview ? (
-          <MuiLink href={`http://localhost:3000/api/cars/file/${car.technicalReview}`} target="_blank" rel="noopener noreferrer">
+          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.technicalReview}`} target="_blank" rel="noopener noreferrer">
             View
           </MuiLink>
         ) : 'Not uploaded'}
       </Typography>
       <Typography variant="body1">
         <strong>Mandatory Insurance:</strong> {car.mandatoryInsurance ? (
-          <MuiLink href={`http://localhost:3000/api/cars/file/${car.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">
+          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">
             View
           </MuiLink>
         ) : 'Not uploaded'}
