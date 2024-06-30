@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+client/.env
+server/.env
+/prueba-aws
 
 # testing
 /coverage
