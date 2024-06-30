@@ -6,7 +6,7 @@
 .pnp.js
 client/.env
 server/.env
-/prueba-aws
+/prueba-aws/prueba.js
 
 # testing
 /coverage
