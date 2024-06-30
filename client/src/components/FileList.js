@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, List, ListItem, ListItemText, Typography, Alert } from '@mui/material';
+import { List, ListItem, ListItemText, CircularProgress, Alert, Box, Typography } from '@mui/material';
 
 const FileList = () => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -11,8 +12,10 @@ const FileList = () => {
       try {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/files`);
         setFiles(res.data);
+        setLoading(false);
       } catch (err) {
         setError('Failed to fetch files');
+        setLoading(false);
         console.error(err);
       }
     };
@@ -20,16 +23,23 @@ const FileList = () => {
     fetchFiles();
   }, []);
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
+
   return (
-    <Box sx={{ maxWidth: 600, margin: 'auto', mt: 5 }}>
+    <Box sx={{ padding: 3 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        File List
+        Uploaded Files
       </Typography>
-      {error && <Alert severity="error">{error}</Alert>}
       <List>
         {files.map((file) => (
           <ListItem key={file._id}>
-            <ListItemText primary={file.filename} secondary={`Uploaded on ${new Date(file.uploadDate).toLocaleString()}`} />
+            <ListItemText primary={file.filename} />
           </ListItem>
         ))}
       </List>

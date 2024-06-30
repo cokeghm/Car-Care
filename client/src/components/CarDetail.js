@@ -1,79 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { Typography, Box, Link as MuiLink, CircularProgress, Alert, Button } from '@mui/material';
+import React from 'react';
+import { Typography, Box, Link as MuiLink } from '@mui/material';
 
-const CarDetail = () => {
-  const { id } = useParams();
-  const [car, setCar] = useState(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchCar = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars/${id}`, {
-          headers: {
-            'x-auth-token': token
-          }
-        });
-        setCar(res.data);
-      } catch (err) {
-        setError('Failed to fetch car details');
-        console.error(err);
-      }
-    };
-
-    fetchCar();
-  }, [id]);
-
-  if (error) {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
+const CarDetail = ({ car }) => {
   if (!car) {
-    return <CircularProgress />;
+    return null;
   }
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {car.brand} {car.model}
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {car.brand} {car.model}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box>
+            <Typography variant="body1"><strong>Registration Certificate:</strong></Typography>
+            <Typography variant="body1">
+              {car.registrationCertificate ? (
+                <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.registrationCertificate}`} target="_blank" rel="noopener noreferrer">
+                  View
+                </MuiLink>
+              ) : 'Not uploaded'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body1"><strong>Circulation Permit:</strong></Typography>
+            <Typography variant="body1">
+              {car.circulationPermit ? (
+                <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.circulationPermit}`} target="_blank" rel="noopener noreferrer">
+                  View
+                </MuiLink>
+              ) : 'Not uploaded'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body1"><strong>Technical Review:</strong></Typography>
+            <Typography variant="body1">
+              {car.technicalReview ? (
+                <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.technicalReview}`} target="_blank" rel="noopener noreferrer">
+                  View
+                </MuiLink>
+              ) : 'Not uploaded'}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body1"><strong>Mandatory Insurance:</strong></Typography>
+            <Typography variant="body1">
+              {car.mandatoryInsurance ? (
+                <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">
+                  View
+                </MuiLink>
+              ) : 'Not uploaded'}
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
       <Typography variant="body1">
         <strong>Year:</strong> {car.year}
       </Typography>
-      <Typography variant="body1">
-        <strong>Registration Certificate:</strong> {car.registrationCertificate ? (
-          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.registrationCertificate}`} target="_blank" rel="noopener noreferrer">
-            View
-          </MuiLink>
-        ) : 'Not uploaded'}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Circulation Permit:</strong> {car.circulationPermit ? (
-          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.circulationPermit}`} target="_blank" rel="noopener noreferrer">
-            View
-          </MuiLink>
-        ) : 'Not uploaded'}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Technical Review:</strong> {car.technicalReview ? (
-          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.technicalReview}`} target="_blank" rel="noopener noreferrer">
-            View
-          </MuiLink>
-        ) : 'Not uploaded'}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Mandatory Insurance:</strong> {car.mandatoryInsurance ? (
-          <MuiLink href={`${process.env.REACT_APP_API_URL}/api/cars/file/${car.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">
-            View
-          </MuiLink>
-        ) : 'Not uploaded'}
-      </Typography>
-      <Button variant="contained" color="primary" sx={{ mt: 2 }} href="/dashboard">
-        Back to Dashboard
-      </Button>
     </Box>
   );
 };

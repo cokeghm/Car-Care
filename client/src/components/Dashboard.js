@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
-import { Typography, Box, Button, CircularProgress, Alert, Table, TableHead, TableBody, TableRow, TableCell, Paper, Card, CardContent } from '@mui/material';
+import { Typography, Box, Button, CircularProgress, Alert, Table, TableHead, TableBody, TableRow, TableCell, Paper, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete'; 
+import EditIcon from '@mui/icons-material/Edit';
+import CarDetail from './CarDetail'; 
+import Maintenance from './Maintenance';
 
 const Dashboard = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCar, setSelectedCar] = useState(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editCar, setEditCar] = useState({ brand: '', model: '', year: '' });
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -46,6 +52,48 @@ const Dashboard = () => {
     }
   };
 
+  const handleDelete = async (carId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      setCars(cars.filter(car => car._id !== carId));
+    } catch (err) {
+      setError('Failed to delete car');
+      console.error(err);
+    }
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/cars/${selectedCar._id}`, editCar, {
+        headers: {
+          'x-auth-token': token,
+          'Content-Type': 'application/json'
+        }
+      });
+      setCars(cars.map(car => (car._id === selectedCar._id ? res.data : car)));
+      setEditDialogOpen(false);
+    } catch (err) {
+      setError('Failed to update car');
+      console.error(err);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setEditCar({ ...editCar, [e.target.name]: e.target.value });
+  };
+
+  const handleEditClick = (car) => {
+    setEditCar({ brand: car.brand, model: car.model, year: car.year });
+    setSelectedCar(car);
+    setEditDialogOpen(true);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -56,10 +104,10 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Tus Autos
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, marginTop: '60px' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.5rem', marginLeft: '3px' }}>
+          Tus Autos
+        </Typography>
         <Button
           variant="contained"
           color="primary"
@@ -70,56 +118,109 @@ const Dashboard = () => {
           Add Car
         </Button>
       </Box>
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontWeight: 'bold', width: '25%', fontSize: '1.2rem' }}>Marca</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '25%', fontSize: '1.2rem' }}>Modelo</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '15%', fontSize: '1.2rem' }}>Año</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', width: '35%', fontSize: '1.2rem' }}>Detalles</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {cars.map(car => (
-              <TableRow key={car._id} onClick={() => fetchCarDetails(car._id)} sx={{ cursor: 'pointer' }}>
-                <TableCell sx={{ fontSize: '1.1rem' }}>{car.brand}</TableCell>
-                <TableCell sx={{ fontSize: '1.1rem' }}>{car.model}</TableCell>
-                <TableCell sx={{ fontSize: '1.1rem' }}>{car.year}</TableCell>
-                <TableCell sx={{ fontSize: '1.1rem' }}>
-                  <Button variant="outlined" color="primary">
-                    View Details
-                  </Button>
-                </TableCell>
+      <Box sx={{ width: 'fit-content' }}>
+        <Paper sx={{ overflow: 'hidden' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>Marca</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>Modelo</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>Año</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', width: '5%' }}>Detalles</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', width: '10%' }}>Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {cars.map(car => (
+                <TableRow key={car._id} sx={{ cursor: 'pointer' }}>
+                  <TableCell>{car.brand}</TableCell>
+                  <TableCell>{car.model}</TableCell>
+                  <TableCell>{car.year}</TableCell>
+                  <TableCell>
+                    <Button variant="outlined" color="primary" onClick={() => fetchCarDetails(car._id)}>
+                      View Details
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<DeleteIcon />}
+                      onClick={(e) => { e.stopPropagation(); handleDelete(car._id); }}
+                      sx={{ mr: 1 }}
+                    >
+                      Delete
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<EditIcon />}
+                      onClick={(e) => { e.stopPropagation(); handleEditClick(car); }}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
       {selectedCar && (
-        <Card sx={{ mt: 3 }}>
-          <CardContent>
-            <Typography variant="h5" component="div" sx={{ fontSize: '1.5rem' }}>
-              {selectedCar.brand} {selectedCar.model}
-            </Typography>
-            <Typography sx={{ mb: 1.5, fontSize: '1.25rem' }} color="text.secondary">
-              Year: {selectedCar.year}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
-              Registration Certificate: {selectedCar.registrationCertificate ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.registrationCertificate}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
-              Circulation Permit: {selectedCar.circulationPermit ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.circulationPermit}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
-              Technical Review: {selectedCar.technicalReview ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.technicalReview}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: '1.1rem' }}>
-              Mandatory Insurance: {selectedCar.mandatoryInsurance ? <a href={`${process.env.REACT_APP_API_URL}/api/files/${selectedCar.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">View</a> : 'Not uploaded'}
-            </Typography>
-          </CardContent>
-        </Card>
+        <>
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <CarDetail car={selectedCar} /> {/* Pasa el auto seleccionado como prop */}
+            </CardContent>
+          </Card>
+          <Card sx={{ mt: 3 }}>
+            <CardContent>
+              <Maintenance car={selectedCar} /> {/* Añadir el componente Maintenance aquí */}
+            </CardContent>
+          </Card>
+        </>
       )}
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle>Edit Car</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="brand"
+            label="Brand"
+            type="text"
+            fullWidth
+            value={editCar.brand}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            name="model"
+            label="Model"
+            type="text"
+            fullWidth
+            value={editCar.model}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            name="year"
+            label="Year"
+            type="number"
+            fullWidth
+            value={editCar.year}
+            onChange={handleInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditSubmit} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

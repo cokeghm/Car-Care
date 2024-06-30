@@ -33,6 +33,13 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        setError('No token found, please login again.');
+        return;
+      }
+
+      console.log('Token:', token);  // Verificar que el token no esté vacío
+
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/cars`, formData, {
         headers: {
           'x-auth-token': token,
@@ -105,24 +112,24 @@ const AddCar = () => {
       <Button variant="contained" component="label">
         Upload Technical Review
         <input
-      type="file"
-      hidden
-      onChange={(e) => handleFileChange(e, setTechnicalReview)}
-    />
-  </Button>
-  <Button variant="contained" component="label">
-    Upload Mandatory Insurance
-    <input
-      type="file"
-      hidden
-      onChange={(e) => handleFileChange(e, setMandatoryInsurance)}
-    />
-  </Button>
-  <Button variant="contained" color="primary" type="submit">
-    Add Car
-  </Button>
-</Box>
-);
+          type="file"
+          hidden
+          onChange={(e) => handleFileChange(e, setTechnicalReview)}
+        />
+      </Button>
+      <Button variant="contained" component="label">
+        Upload Mandatory Insurance
+        <input
+          type="file"
+          hidden
+          onChange={(e) => handleFileChange(e, setMandatoryInsurance)}
+        />
+      </Button>
+      <Button variant="contained" color="primary" type="submit">
+        Add Car
+      </Button>
+    </Box>
+  );
 };
 
 export default AddCar;

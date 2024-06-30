@@ -8,7 +8,7 @@ const Navbar = () => {
       <Toolbar>
         <Box sx={{ flexGrow: 1 }}>
           <RouterLink to="/" style={{ textDecoration: 'none' }}>
-            <img src="/Logo.jpg" alt="Logo" style={{ height: '70px', 'margin-top': '18px' }} />
+            <img src="/Logo.jpg" alt="Logo" style={{ height: '70px', 'marginTop': '18px' }} />
           </RouterLink>
         </Box>
         <Button color="primary" component={RouterLink} to="/dashboard">
