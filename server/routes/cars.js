@@ -45,6 +45,7 @@ module.exports = (upload) => {
     }
   });
 
+  
   // Obtener un vehículo por ID
   router.get('/:id', auth, async (req, res) => {
     try {
