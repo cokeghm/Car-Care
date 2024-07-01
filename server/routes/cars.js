@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Car = require('../models/Car');
-const Tesseract = require('tesseract.js');
+
 
 module.exports = (upload) => {
   // Crear un nuevo vehículo
