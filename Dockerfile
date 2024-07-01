@@ -19,7 +19,7 @@ RUN npm install --prefix client
 COPY . .
 
 # Construye el cliente
-RUN npm run build --prefix client
+RUN npm run client-build
 
 # Etapa 2: Configuración de producción
 FROM node:16 as production-stage

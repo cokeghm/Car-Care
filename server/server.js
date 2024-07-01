@@ -13,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Configuración de strictQuery
+mongoose.set('strictQuery', false);
+
 // MongoDB connection
 const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
