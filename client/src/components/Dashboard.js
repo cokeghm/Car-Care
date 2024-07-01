@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { Link as RouterLink } from 'react-router-dom';
-import { Typography, Box, Button, CircularProgress, Alert, Table, TableHead, TableBody, TableRow, TableCell, Paper, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Typography, Box, Button, CircularProgress, Alert, Table, TableHead, TableBody, TableRow, TableCell, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,7 +20,7 @@ const Dashboard = () => {
     const fetchCars = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars`, {
+        const res = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/cars`, {
           headers: {
             'x-auth-token': token
           }
@@ -40,7 +40,7 @@ const Dashboard = () => {
   const fetchCarDetails = async (carId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
+      const res = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
         headers: {
           'x-auth-token': token
         }
@@ -55,7 +55,7 @@ const Dashboard = () => {
   const handleDelete = async (carId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
+      await axiosInstance.delete(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
         headers: {
           'x-auth-token': token
         }
@@ -70,7 +70,7 @@ const Dashboard = () => {
   const handleEditSubmit = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.put(`${process.env.REACT_APP_API_URL}/api/cars/${selectedCar._id}`, editCar, {
+      const res = await axiosInstance.put(`${process.env.REACT_APP_API_URL}/api/cars/${selectedCar._id}`, editCar, {
         headers: {
           'x-auth-token': token,
           'Content-Type': 'application/json'
@@ -167,18 +167,10 @@ const Dashboard = () => {
         </Paper>
       </Box>
       {selectedCar && (
-        <>
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <CarDetail car={selectedCar} /> {/* Pasa el auto seleccionado como prop */}
-            </CardContent>
-          </Card>
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Maintenance car={selectedCar} /> {/* Añadir el componente Maintenance aquí */}
-            </CardContent>
-          </Card>
-        </>
+        <Box sx={{ padding: 1, mt:'30px', backgroundColor: 'lightGreen', borderRadius:'15px' }}>
+          <CarDetail car={selectedCar} /> {/* Pasa el auto seleccionado como prop */}
+          <Maintenance car={selectedCar} /> {/* Añadir el componente Maintenance aquí */}
+        </Box>
       )}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
         <DialogTitle>Edit Car</DialogTitle>

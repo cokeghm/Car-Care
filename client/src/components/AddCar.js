@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 
 const AddCar = () => {
@@ -11,12 +12,17 @@ const AddCar = () => {
   const [circulationPermit, setCirculationPermit] = useState(null);
   const [technicalReview, setTechnicalReview] = useState(null);
   const [mandatoryInsurance, setMandatoryInsurance] = useState(null);
+  const [registrationCertificateLoaded, setRegistrationCertificateLoaded] = useState(false);
+  const [circulationPermitLoaded, setCirculationPermitLoaded] = useState(false);
+  const [technicalReviewLoaded, setTechnicalReviewLoaded] = useState(false);
+  const [mandatoryInsuranceLoaded, setMandatoryInsuranceLoaded] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const handleFileChange = (e, setFile) => {
+  const handleFileChange = (e, setFile, setLoaded) => {
     setFile(e.target.files[0]);
+    setLoaded(true);
   };
 
   const handleSubmit = async (e) => {
@@ -33,14 +39,7 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        setError('No token found, please login again.');
-        return;
-      }
-
-      console.log('Token:', token);  // Verificar que el token no esté vacío
-
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/cars`, formData, {
+      const res = await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/cars`, formData, {
         headers: {
           'x-auth-token': token,
           'Content-Type': 'multipart/form-data'
@@ -98,32 +97,36 @@ const AddCar = () => {
         <input
           type="file"
           hidden
-          onChange={(e) => handleFileChange(e, setRegistrationCertificate)}
+          onChange={(e) => handleFileChange(e, setRegistrationCertificate, setRegistrationCertificateLoaded)}
         />
+        {registrationCertificateLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
         Upload Circulation Permit
         <input
           type="file"
           hidden
-          onChange={(e) => handleFileChange(e, setCirculationPermit)}
+          onChange={(e) => handleFileChange(e, setCirculationPermit, setCirculationPermitLoaded)}
         />
+        {circulationPermitLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
         Upload Technical Review
         <input
           type="file"
           hidden
-          onChange={(e) => handleFileChange(e, setTechnicalReview)}
+          onChange={(e) => handleFileChange(e, setTechnicalReview, setTechnicalReviewLoaded)}
         />
+        {technicalReviewLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
         Upload Mandatory Insurance
         <input
           type="file"
           hidden
-          onChange={(e) => handleFileChange(e, setMandatoryInsurance)}
+          onChange={(e) => handleFileChange(e, setMandatoryInsurance, setMandatoryInsuranceLoaded)}
         />
+        {mandatoryInsuranceLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" color="primary" type="submit">
         Add Car

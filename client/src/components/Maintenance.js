@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, TextField, Button } from '@mui/material';
-import axios from 'axios';
+import { Table, Typography, Box, TableHead, TableRow, Paper, TableCell, TableBody, TextField, Button } from '@mui/material';
+import axiosInstance from '../axiosConfig';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,7 +29,7 @@ const Maintenance = ({ car }) => {
     const record = records[idx];
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/maintenance`, { ...record, carId: car._id }, {
+      await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/maintenance`, { ...record, carId: car._id }, {
         headers: {
           'x-auth-token': token,
         }
@@ -46,70 +46,77 @@ const Maintenance = ({ car }) => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>N°</TableCell>
-            <TableCell>Fecha</TableCell>
-            <TableCell>Tipo Mantenimiento</TableCell>
-            <TableCell>Descripción</TableCell>
-            <TableCell>Precio</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {records.map((record, idx) => (
-            <TableRow key={idx}>
-              <TableCell>{idx + 1}</TableCell>
-              <TableCell>
-                <DatePicker
-                  value={record.date}
-                  onChange={(date) => handleDateChange(date, idx)}
-                  renderInput={(params) => <TextField {...params} fullWidth disabled={editIdx !== idx} />}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  value={record.type}
-                  onChange={(e) => handleChange(e, 'type', idx)}
-                  disabled={editIdx !== idx}
-                  fullWidth
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  value={record.description}
-                  onChange={(e) => handleChange(e, 'description', idx)}
-                  disabled={editIdx !== idx}
-                  fullWidth
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  value={record.price}
-                  onChange={(e) => handleChange(e, 'price', idx)}
-                  disabled={editIdx !== idx}
-                  fullWidth
-                />
-              </TableCell>
-              <TableCell>
-                {editIdx === idx ? (
-                  <Button onClick={() => handleSave(idx)}>Save</Button>
-                ) : (
-                  <Button onClick={() => setEditIdx(idx)}>Edit</Button>
-                )}
+    <Box sx={{ padding: 1, mt:'30px' }}>
+      <Typography variant="h1" component="h1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 2 }}>
+        Mantenimientos
+      </Typography>
+      <Paper elevation={2} sx={{ padding: 3 }}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>N°</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell>Tipo Mantenimiento</TableCell>
+              <TableCell>Descripción</TableCell>
+              <TableCell>Precio</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {records.map((record, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{idx + 1}</TableCell>
+                <TableCell>
+                  <DatePicker
+                    value={record.date}
+                    onChange={(date) => handleDateChange(date, idx)}
+                    renderInput={(params) => <TextField {...params} fullWidth disabled={editIdx !== idx} />}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    value={record.type}
+                    onChange={(e) => handleChange(e, 'type', idx)}
+                    disabled={editIdx !== idx}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    value={record.description}
+                    onChange={(e) => handleChange(e, 'description', idx)}
+                    disabled={editIdx !== idx}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    value={record.price}
+                    onChange={(e) => handleChange(e, 'price', idx)}
+                    disabled={editIdx !== idx}
+                    fullWidth
+                  />
+                </TableCell>
+                <TableCell>
+                  {editIdx === idx ? (
+                    <Button onClick={() => handleSave(idx)}>Save</Button>
+                  ) : (
+                    <Button onClick={() => setEditIdx(idx)}>Edit</Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+            <TableRow>
+              <TableCell colSpan={6}>
+                <Button onClick={handleAdd}>Add Record</Button>
               </TableCell>
             </TableRow>
-          ))}
-          <TableRow>
-            <TableCell colSpan={6}>
-              <Button onClick={handleAdd}>Add Record</Button>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </LocalizationProvider>
+          </TableBody>
+        </Table>
+      </LocalizationProvider>
+    </Paper>
+    </Box>
   );
 };
 

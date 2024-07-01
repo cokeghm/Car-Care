@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosConfig';
 import { List, ListItem, ListItemText, CircularProgress, Alert, Box, Typography } from '@mui/material';
 
 const FileList = () => {
@@ -10,7 +10,7 @@ const FileList = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/files`);
+        const res = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/files`);
         setFiles(res.data);
         setLoading(false);
       } catch (err) {
