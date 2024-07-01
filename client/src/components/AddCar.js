@@ -71,21 +71,21 @@ const AddCar = () => {
       {error && <Alert severity="error">{error}</Alert>}
       {success && <Alert severity="success">{success}</Alert>}
       <TextField
-        label="Brand"
+        label="Marca"
         variant="outlined"
         value={brand}
         onChange={(e) => setBrand(e.target.value)}
         required
       />
       <TextField
-        label="Model"
+        label="Modelo"
         variant="outlined"
         value={model}
         onChange={(e) => setModel(e.target.value)}
         required
       />
       <TextField
-        label="Year"
+        label="Año"
         variant="outlined"
         type="number"
         value={year}
@@ -93,7 +93,7 @@ const AddCar = () => {
         required
       />
       <Button variant="contained" component="label">
-        Upload Registration Certificate
+        Subir Padron
         <input
           type="file"
           hidden
@@ -102,7 +102,7 @@ const AddCar = () => {
         {registrationCertificateLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
-        Upload Circulation Permit
+        Subir Permiso Circulación
         <input
           type="file"
           hidden
@@ -111,7 +111,7 @@ const AddCar = () => {
         {circulationPermitLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
-        Upload Technical Review
+        Subir Revisión Tecnica
         <input
           type="file"
           hidden
@@ -120,7 +120,7 @@ const AddCar = () => {
         {technicalReviewLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
       <Button variant="contained" component="label">
-        Upload Mandatory Insurance
+        Subir Seguro Obligatorio
         <input
           type="file"
           hidden
@@ -128,7 +128,7 @@ const AddCar = () => {
         />
         {mandatoryInsuranceLoaded && <CheckIcon sx={{ ml: 1 }} />}
       </Button>
-      <Button variant="contained" color="primary" type="submit">
+      <Button variant="contained" color="secondary" type="submit">
         Add Car
       </Button>
     </Box>

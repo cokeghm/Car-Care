@@ -8,7 +8,7 @@ const CarDetail = ({ car }) => {
 
   return (
     <Box sx={{ padding: 1, mt:'30px' }}>
-      <Typography variant="h1" component="h1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 2 }}>
+      <Typography variant="h1" component="h1" gutterBottom sx={{ color:'white',fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 2 }}>
         Detalle Auto
       </Typography>
       <Paper elevation={2} sx={{ padding: 3 }}>
@@ -16,52 +16,53 @@ const CarDetail = ({ car }) => {
           <Typography variant="h5" component="h1" gutterBottom>
             {car.brand} {car.model}
           </Typography>
-          <Box sx={{ display: 'flex',mr:'40%', gap: 4 }}>
-            <Box>
-              <Typography variant="body1"><strong>Padrón:</strong></Typography>
+          <Typography>
+          <strong>Año:</strong> {car.year}
+        </Typography>
+        
+          <Box sx={{ display: 'flex',mr:'20%', gap: 3 }}>
+            <Box sx={{flex:2}}>
+              <Typography variant="body1"><strong>Padrón: </strong></Typography>
               <Typography variant="body1">
                 {car.registrationCertificate ? (
                   <MuiLink href={`${car.registrationCertificate}`} target="_blank" rel="noopener noreferrer">
-                    View
+                    Ver
                   </MuiLink>
-                ) : 'Not uploaded'}
+                ) : 'No hay adjunto'}
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{flex:2}}>
               <Typography variant="body1"><strong>Permiso Circulación:</strong></Typography>
               <Typography variant="body1">
                 {car.circulationPermit ? (
                   <MuiLink href={`${car.circulationPermit}`} target="_blank" rel="noopener noreferrer">
-                    View
+                    Ver
                   </MuiLink>
-                ) : 'Not uploaded'}
+                ) : 'No hay adjunto'}
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{flex:2}}>
               <Typography variant="body1"><strong>Revisión Técnica:</strong></Typography>
               <Typography variant="body1">
                 {car.technicalReview ? (
                   <MuiLink href={`${car.technicalReview}`} target="_blank" rel="noopener noreferrer">
-                    View
+                    Ver
                   </MuiLink>
-                ) : 'Not uploaded'}
+                ) : 'No hay adjunto'}
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{flex:2}}>
               <Typography variant="body1"><strong>SOAP:</strong></Typography>
               <Typography variant="body1">
                 {car.mandatoryInsurance ? (
                   <MuiLink href={`${car.mandatoryInsurance}`} target="_blank" rel="noopener noreferrer">
-                    View
+                    Ver
                   </MuiLink>
-                ) : 'Not uploaded'}
+               ) : 'No hay adjunto'}
               </Typography>
             </Box>
           </Box>
         </Box>
-        <Typography>
-          <strong>Año:</strong> {car.year}
-        </Typography>
       </Paper>
     </Box>
   );

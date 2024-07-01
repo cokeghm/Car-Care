@@ -3,9 +3,9 @@ import axiosInstance from '../axiosConfig';
 import { Link as RouterLink } from 'react-router-dom';
 import { Typography, Box, Button, CircularProgress, Alert, Table, TableHead, TableBody, TableRow, TableCell, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete'; 
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import CarDetail from './CarDetail'; 
+import CarDetail from './CarDetail';
 import Maintenance from './Maintenance';
 
 const Dashboard = () => {
@@ -13,8 +13,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCar, setSelectedCar] = useState(null);
+  const [maintenanceRecords, setMaintenanceRecords] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editCar, setEditCar] = useState({ brand: '', model: '', year: '' });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [carToDelete, setCarToDelete] = useState(null);
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -40,29 +43,20 @@ const Dashboard = () => {
   const fetchCarDetails = async (carId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
+      const carRes = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
         headers: {
           'x-auth-token': token
         }
       });
-      setSelectedCar(res.data);
+      const maintenanceRes = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/maintenance/${carId}`, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      setSelectedCar(carRes.data);
+      setMaintenanceRecords(maintenanceRes.data);
     } catch (err) {
       setError('Failed to fetch car details');
-      console.error(err);
-    }
-  };
-
-  const handleDelete = async (carId) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axiosInstance.delete(`${process.env.REACT_APP_API_URL}/api/cars/${carId}`, {
-        headers: {
-          'x-auth-token': token
-        }
-      });
-      setCars(cars.filter(car => car._id !== carId));
-    } catch (err) {
-      setError('Failed to delete car');
       console.error(err);
     }
   };
@@ -101,6 +95,28 @@ const Dashboard = () => {
   if (error) {
     return <Alert severity="error">{error}</Alert>;
   }
+  // Función para manejar la apertura del diálogo de eliminación
+  const handleDeleteClick = (car) => {
+    setCarToDelete(car);
+    setDeleteDialogOpen(true);
+  };
+  // Función para confirmar la eliminación
+  const confirmDelete = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axiosInstance.delete(`${process.env.REACT_APP_API_URL}/api/cars/${carToDelete._id}`, {
+        headers: {
+          'x-auth-token': token
+        }
+      });
+      setCars(cars.filter(car => car._id !== carToDelete._id));
+      setDeleteDialogOpen(false);
+      setCarToDelete(null);
+    } catch (err) {
+      setError('Failed to delete car');
+      console.error(err);
+    }
+  };
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -137,28 +153,46 @@ const Dashboard = () => {
                   <TableCell>{car.model}</TableCell>
                   <TableCell>{car.year}</TableCell>
                   <TableCell>
-                    <Button variant="outlined" color="primary" onClick={() => fetchCarDetails(car._id)}>
+                    <Button variant="outlined" onClick={() => fetchCarDetails(car._id)}>
                       View Details
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      startIcon={<DeleteIcon />}
-                      onClick={(e) => { e.stopPropagation(); handleDelete(car._id); }}
-                      sx={{ mr: 1 }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<EditIcon />}
-                      onClick={(e) => { e.stopPropagation(); handleEditClick(car); }}
-                    >
-                      Edit
-                    </Button>
+                  < Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        variant="contained"
+                        startIcon={<EditIcon />}
+                        onClick={(e) => { e.stopPropagation(); handleEditClick(car); }}
+                        sx={{ width: '100px', backgroundColor: 'black', '&:hover': { backgroundColor: 'gray' } }}
+                      >
+                        Edit
+                      </Button>
+                        <Dialog
+                          open={deleteDialogOpen}
+                          onClose={() => setDeleteDialogOpen(false)}
+                        > 
+                          <DialogTitle>Confirm Deletion</DialogTitle>
+                          <DialogContent>
+                            <Typography>Are you sure you want to delete this car?</Typography>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+                              Cancel
+                            </Button>
+                            <Button onClick={confirmDelete} color="secondary">
+                              Delete
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      <Button
+                        variant="contained"
+                        startIcon={<DeleteIcon />}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteClick(car); }}
+                        sx={{ width: '100px', backgroundColor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -167,9 +201,9 @@ const Dashboard = () => {
         </Paper>
       </Box>
       {selectedCar && (
-        <Box sx={{ padding: 1, mt:'30px', backgroundColor: 'lightGreen', borderRadius:'15px' }}>
-          <CarDetail car={selectedCar} /> {/* Pasa el auto seleccionado como prop */}
-          <Maintenance car={selectedCar} /> {/* Añadir el componente Maintenance aquí */}
+        <Box sx={{ padding: 1, mt: '30px', backgroundColor:'black', borderRadius: '15px' }}>
+          <CarDetail car={selectedCar} />
+          <Maintenance car={selectedCar} maintenanceRecords={maintenanceRecords} />
         </Box>
       )}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
