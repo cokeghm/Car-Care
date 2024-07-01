@@ -24,7 +24,6 @@ module.exports = (upload) => {
         circulationPermit: req.files['circulationPermit'] ? req.files['circulationPermit'][0].location : null,
         technicalReview: req.files['technicalReview'] ? req.files['technicalReview'][0].location : null,
         mandatoryInsurance: req.files['mandatoryInsurance'] ? req.files['mandatoryInsurance'][0].location : null,
-      
       });
 
       const car = await newCar.save();
