@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const Car = require('../models/Car');
+const Tesseract = require('tesseract.js');
 
 module.exports = (upload) => {
   // Crear un nuevo vehículo
@@ -23,6 +24,7 @@ module.exports = (upload) => {
         circulationPermit: req.files['circulationPermit'] ? req.files['circulationPermit'][0].location : null,
         technicalReview: req.files['technicalReview'] ? req.files['technicalReview'][0].location : null,
         mandatoryInsurance: req.files['mandatoryInsurance'] ? req.files['mandatoryInsurance'][0].location : null,
+      
       });
 
       const car = await newCar.save();
