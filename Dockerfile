@@ -11,13 +11,15 @@ RUN npm install
 
 # Copia los archivos del cliente y las dependencias
 COPY client/package.json client/package-lock.json ./client/
+
+#Instala las dependencias del cliente
 RUN npm install --prefix client
 
 # Copia el resto de los archivos del proyecto
 COPY . .
 
 # Construye el cliente
-RUN npm run client-build
+RUN npm run build --prefix client
 
 # Etapa 2: Configuración de producción
 FROM node:16 as production-stage
