@@ -6,10 +6,6 @@ const MaintenanceSchema = new mongoose.Schema({
     ref: 'Car',
     required: true
   },
-  number: {
-    type: String,
-    required: true
-  },
   date: {
     type: Date,
     required: true
